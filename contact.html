@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Contact</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
+  <style>
+    body.contact-body {
+      background-image: url('Psionica.jpg');
+      background-size: cover;
+      background-attachment: fixed;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: #0a0f1c;
+    }
+    h1 {
+      color: #ffbdf7;
+      text-align: center;
+      animation: pulse 4s ease-in-out infinite;
+    }
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      background-color: #1a1c2b;
+      color: #ffffff;
+      border: 1px solid #7df9ff;
+      border-radius: 4px;
+    }
+    .radios {
+      margin-top: 15px;
+    }
+    input[type="submit"] {
+      display: block;
+      margin: 30px auto 0 auto;
+      padding: 12px 24px;
+      background-color: #78f5ff;
+      border: none;
+      color: #0a0f1c;
+      font-weight: bold;
+      font-size: 1em;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    input[type="submit"]:hover {
+      background-color: #ff79c6;
+      color: white;
+    }
+    a {
+      color: #ffcaff;
+      text-decoration: none;
+    }
+    a:hover {
+      color: #fff68f;
+    }
+    .nav {
+      margin-top: 50px;
+      text-align: center;
+    }
+    .chapter-art {
+      width: 90%;
+      max-width: 480px;
+      display: block;
+      margin: 32px auto;
+      border-radius: 14px;
+      border: 2px solid #8be9fd55;
+      box-shadow: 0 0 36px #2c1a4e99;
+      transition: transform 0.3s;
+    }
+    @keyframes pulse {
+      0%, 100% {
+        text-shadow: 0 0 8px #ff79c6, 0 0 12px #8be9fd;
+      }
+      50% {
+        text-shadow: 0 0 16px #ffbdf7, 0 0 24px #ffffff;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-overlay"></div>
+  <div class="center-container">
+  <div class="main-card">
+  <h1 id="main title">🌸 ℭ𝔬𝔫𝔱𝔞𝔠𝔱 𝔱𝔥𝔢 𝔅𝔩𝔬𝔬𝔪𝔩𝔦𝔫𝔢 🌸</h1>
+  <form>
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" placeholder="Enter your name" required>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" placeholder="Enter your E-mail" required>
+  
+    <label class="radios">Do you accept the Terms of Agreement?</label>
+    <label for="yes">Yes</label>
+    <input type="radio" id="yes" name="terms" value="yes" required>
+    <label for="no">No</label>
+    <input type="radio" id="no" name="terms" value="no"><br>
+
+    <input type="submit" value="Submit Message">
+  </form>
+  <div class="nav">
+    <p>
+      <a href="index.html">← Home</a> |
+      <a href="story.html">Read My Story →</a>
+    </p>
+  </div>
+  <div id="portrait" class="chapter-art"></div>
+  <script>
+document.addEventListener("DOMContentLoaded", function() {
+  const form = document.querySelector("form");
+  const nameInput = document.getElementById("name");
+  const emailInput = document.getElementById("email");
+  const termsYes = document.getElementById("yes");
+  const termsNo = document.getElementById("no");
+
+  // Optional: Message below form for terms validation
+  let termsMsg = document.createElement("div");
+  termsMsg.style.color = "#ff79c6";
+  termsMsg.style.marginTop = "16px";
+  termsMsg.style.fontWeight = "bold";
+  form.appendChild(termsMsg);
+
+  // Remove error highlight on input
+  [nameInput, emailInput].forEach(input => {
+    input.addEventListener("input", function() {
+      input.style.borderColor = "#7df9ff";
+      input.style.backgroundColor = "#1a1c2b";
+    });
+  });
+
+  form.addEventListener("submit", function(e) {
+    let valid = true;
+    termsMsg.textContent = ""; // clear message
+
+    // NAME required
+    if (!nameInput.value.trim()) {
+      valid = false;
+      nameInput.focus();
+      nameInput.style.borderColor = "#ff3c6f";
+      nameInput.style.backgroundColor = "#27101a";
+      return e.preventDefault();
+    }
+    // EMAIL required
+    if (!emailInput.value.trim()) {
+      valid = false;
+      emailInput.focus();
+      emailInput.style.borderColor = "#ff3c6f";
+      emailInput.style.backgroundColor = "#27101a";
+      return e.preventDefault();
+    }
+    // TERMS required (must pick yes/no)
+    if (!termsYes.checked && !termsNo.checked) {
+      valid = false;
+      termsMsg.textContent = "You must accept or decline the Terms of Agreement.";
+      termsYes.focus();
+      return e.preventDefault();
+    }
+    // All good: clear highlights
+    [nameInput, emailInput].forEach(input => {
+      input.style.borderColor = "#7df9ff";
+      input.style.backgroundColor = "#1a1c2b";
+    });
+    termsMsg.textContent = "";
+  });
+});
+</script>
+</body>
+    <script>
+function setup() {
+  // Create canvas and attach to the "portrait" div
+  let cnv = createCanvas(400, 500);
+  cnv.parent("portrait");
+  background(28, 22, 42);
+
+  // --- Face (ellipse) ---
+  fill(220, 200, 165);
+  noStroke();
+  ellipse(200, 180, 140, 180); // face
+
+  // --- Eyes (circles) ---
+  fill(50, 70, 130);
+  ellipse(170, 170, 28, 28); // left eye
+  ellipse(230, 170, 28, 28); // right eye
+  fill(255);
+  ellipse(175, 175, 7, 7); // left eye sparkle
+  ellipse(235, 175, 7, 7); // right eye sparkle
+
+  // --- Glasses (rects & lines) ---
+  stroke(120, 180, 240);
+  strokeWeight(3);
+  noFill();
+  rect(155, 158, 40, 30, 8); // left lens
+  rect(205, 158, 40, 30, 8); // right lens
+  line(195, 172, 205, 172); // bridge
+
+  // --- Smile (arc as line) ---
+  stroke(80, 40, 80);
+  strokeWeight(3);
+  noFill();
+  arc(200, 210, 60, 30, 0, PI);
+
+  // --- Hair (triangle) ---
+  noStroke();
+  fill(55, 37, 20);
+  triangle(200, 85, 130, 170, 270, 170); // main bang
+
+  // --- Ears (rects) ---
+  fill(220, 200, 165);
+  rect(120, 180, 20, 38, 12);
+  rect(260, 180, 20, 38, 12);
+
+  // --- Nose (line + ellipse) ---
+  stroke(140, 90, 80);
+  strokeWeight(2);
+  line(200, 185, 200, 205);
+  noStroke();
+  fill(210, 180, 150);
+  ellipse(200, 207, 20, 10);
+
+  // --- Freckles (points) ---
+  stroke(170, 120, 80);
+  strokeWeight(5);
+  point(190, 215);
+  point(210, 215);
+  point(200, 220);
+
+  // --- Shoulders (rects) ---
+  noStroke();
+  fill(75, 95, 180);
+  rect(120, 300, 160, 50, 24);
+
+  // --- Title and Signature (text) ---
+  fill(255, 202, 255);
+  noStroke();
+  textSize(24);
+  textAlign(CENTER);
+  text("Self Portrait: Kyle Hansen", 200, 370);
+
+  fill(135, 249, 255);
+  textSize(18);
+  textAlign(RIGHT);
+  text("Kyle Hansen", 390, 490); // Signature
+}
+</script>
+</html>

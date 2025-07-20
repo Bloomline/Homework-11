@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bloomline Escape</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"></script>
+  <style>
+    body { background: #0a0f1c; color: #f0eaff; font-family: 'Segoe UI', sans-serif; }
+    .center { text-align: center; margin-top: 24px; }
+  </style>
+</head>
+<body>
+  <h1 class="center">Bloomline Exit</h1>
+  <div id="game"></div>
+  <script>
+    // --- GAME STATE ---
+    let player, exit;
+    let obstacles = [];
+    let staticObstacle = null;
+    let won = false;
+
+    function setup() {
+      let cnv = createCanvas(600, 400);
+      cnv.parent("game");
+
+      // Player start
+      player = { x: 50, y: height / 2, r: 18, color: color(120,255,255) };
+
+      // Create exit on right
+      exit = { x: width - 40, y: height / 2 - 40, w: 48, h: 88, color: color(255,180,120) };
+
+      // Add moving obstacles (at least 2, random sizes/colors/starting positions)
+      obstacles.push(makeMovingObstacle(200, 90, 42, 26, color(255, 99, 148), 2, 1.6));
+      obstacles.push(makeMovingObstacle(450, 320, 65, 42, color(88, 228, 255), -1.4, -1.1));
+      obstacles.push(makeMovingObstacle(150, 280, 30, 60, color(179, 255, 91), 2, -1.8)); // 3 for fun!
+    }
+
+    function draw() {
+      background(24, 16, 44);
+
+      // Draw Exit
+      fill(exit.color);
+      rect(exit.x, exit.y, exit.w, exit.h, 10);
+      fill(250,245,170);
+      textAlign(CENTER, CENTER);
+      textSize(19);
+      text("EXIT", exit.x + exit.w/2, exit.y + exit.h/2);
+
+      // Draw obstacles & move them
+      for (let obs of obstacles) {
+        fill(obs.color);
+        rect(obs.x, obs.y, obs.w, obs.h, 8);
+        obs.x += obs.dx;
+        obs.y += obs.dy;
+        // Wrap around (torus world)
+        if (obs.x > width) obs.x = -obs.w;
+        else if (obs.x + obs.w < 0) obs.x = width;
+        if (obs.y > height) obs.y = -obs.h;
+        else if (obs.y + obs.h < 0) obs.y = height;
+      }
+
+      // Draw static obstacle if it exists
+      if (staticObstacle) {
+        fill(staticObstacle.color);
+        rect(staticObstacle.x, staticObstacle.y, staticObstacle.w, staticObstacle.h, 10);
+      }
+
+      // Draw player
+      fill(player.color);
+      ellipse(player.x, player.y, player.r * 2);
+
+      // Move player (with keys)
+      if (!won) {
+        if (keyIsDown(LEFT_ARROW) || keyIsDown(65)) player.x -= 3.5;
+        if (keyIsDown(RIGHT_ARROW) || keyIsDown(68)) player.x += 3.5;
+        if (keyIsDown(UP_ARROW) || keyIsDown(87)) player.y -= 3.5;
+        if (keyIsDown(DOWN_ARROW) || keyIsDown(83)) player.y += 3.5;
+      }
+
+      // Keep player in bounds
+      player.x = constrain(player.x, player.r, width - player.r);
+      player.y = constrain(player.y, player.r, height - player.r);
+
+      // Win check
+      if (!won &&
+        player.x + player.r > exit.x && player.x - player.r < exit.x + exit.w &&
+        player.y + player.r > exit.y && player.y - player.r < exit.y + exit.h) {
+        won = true;
+      }
+
+      // Win 
+      if (won) {
+        fill(255,202,255);
+        textAlign(CENTER, CENTER);
+        textSize(32);
+        text("You Escaped the Bloomline! 🌸", width/2, height/2);
+      }
+    }
+
+    function keyPressed() {
+      if (won && (key === 'r' || key === 'R')) {
+        won = false;
+        player.x = 50;
+        player.y = height / 2;
+      }
+    }
+
+    function mousePressed() {
+      if (!staticObstacle) {
+        staticObstacle = {
+          x: mouseX - 25,
+          y: mouseY - 20,
+          w: 50 + random(-10, 30),
+          h: 40 + random(-8, 20),
+          color: color(random(180,255), random(90,220), random(180,255))
+        };
+      }
+    }
+
+    function makeMovingObstacle(x, y, w, h, col, dx, dy) {
+      return { x: x, y: y, w: w, h: h, color: col, dx: dx, dy: dy };
+    }
+  </script>
+  <div class="center" style="color:#b6f2ff;margin-top:12px;">
+    <p>
+      Use arrow keys or WASD to move.<br>
+      Click anywhere to add a new (static) obstacle.<br>
+      Touch the exit to win! Press R to reset after winning.
+    </p>
+  </div>
+</body>
+</html>
