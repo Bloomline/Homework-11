@@ -17,7 +17,7 @@
     // --- GAME STATE ---
     let player, exit;
     let obstacles = [];
-    let staticObstacle = null;
+    let staticObstacles = [];
     let won = false;
 
     function setup() {
@@ -34,18 +34,18 @@
       obstacles.push(makeMovingObstacle(200, 90, 42, 26, color(255, 99, 148), 2, 1.6));
       obstacles.push(makeMovingObstacle(450, 320, 65, 42, color(88, 228, 255), -1.4, -1.1));
       obstacles.push(makeMovingObstacle(150, 280, 30, 60, color(179, 255, 91), 2, -1.8)); // 3 for fun!
-    }
+     }
 
-    function draw() {
-      background(24, 16, 44);
+      function draw() {
+        background(24, 16, 44);
 
-      // Draw Exit
-      fill(exit.color);
-      rect(exit.x, exit.y, exit.w, exit.h, 10);
-      fill(250,245,170);
-      textAlign(CENTER, CENTER);
-      textSize(19);
-      text("EXIT", exit.x + exit.w/2, exit.y + exit.h/2);
+        // Draw Exit
+        fill(exit.color);
+        rect(exit.x, exit.y, exit.w, exit.h, 10);
+        fill(250,245,170);
+        textAlign(CENTER, CENTER);
+        textSize(19);
+        text("EXIT", exit.x + exit.w/2, exit.y + exit.h/2);
 
       // Draw obstacles & move them
       for (let obs of obstacles) {
@@ -60,11 +60,12 @@
         else if (obs.y + obs.h < 0) obs.y = height;
       }
 
-      // Draw static obstacle if it exists
-      if (staticObstacle) {
-        fill(staticObstacle.color);
-        rect(staticObstacle.x, staticObstacle.y, staticObstacle.w, staticObstacle.h, 10);
+      // Draw all static obstacles
+      for (let so of staticObstacles) {
+        fill(so.color);
+        rect(so.x, so.y, so.w, so.h, 10);
       }
+
 
       // Draw player
       fill(player.color);
@@ -107,17 +108,15 @@
     }
 
     function mousePressed() {
-      if (!staticObstacle) {
-        staticObstacle = {
-          x: mouseX - 25,
-          y: mouseY - 20,
-          w: 50 + random(-10, 30),
-          h: 40 + random(-8, 20),
-          color: color(random(180,255), random(90,220), random(180,255))
-        };
-      }
-    }
-
+  staticObstacles.push({
+    x: mouseX - 25,
+    y: mouseY - 20,
+    w: 50 + random(-10, 30),
+    h: 40 + random(-8, 20),
+    color: color(random(180,255), random(90,220), random(180,255))
+  });
+}
+    
     function makeMovingObstacle(x, y, w, h, col, dx, dy) {
       return { x: x, y: y, w: w, h: h, color: col, dx: dx, dy: dy };
     }
